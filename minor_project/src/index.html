@@ -1,32 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FileApp</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-    <!--<div class="info">
-        <div class="info__primary">Drag & Drop some files to the Box below.</div>
-        <div class="info__secondary"></div>
-    </div>-->
-    <section class = "upload-container">
-        <div class="drop-zone">
-            <div class="icon-container">
-                <img src="./file.svg" alt="file icon" class="centre" draggable="false">
-                <img src="./file.svg" alt="file icon" class="left" draggable="false">
-                <img src="./file.svg" alt="file icon" class="right" draggable="false">
-        
 
+<body>
+    <section class="upload-container">
+            <div class="drop-zone">
+                <div class="icon-container">
+                    <img src="file.svg" draggable="false" class="center" alt="File Icon">
+                    <img src="file.svg" draggable="false" class="left" alt="File Icon">
+                    <img src="file.svg" draggable="false" class="right" alt="File Icon">
+                </div>
+                <input type="file" id="fileInput">
+                <div class="title">Drop your Files here or, <span id="browseBtn">browse</span></div>
             </div>
-            <div class="title">Drop your files here or <span class ="browseBtn">Browse</span></div>
-            
-        </div>
-        
-    </section>
-  
-    
+    </section>    
+
+<script src="index.js"></script>
 </body>
+
 </html>
