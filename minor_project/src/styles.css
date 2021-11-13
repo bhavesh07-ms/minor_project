@@ -1,7 +1,7 @@
 :root {
   --main-bg-color: #edf5fe;
   --light-blue: #03a9f4;
-  --border-color: #0288d147;
+  --border-color: white;
   --container-width: 500px;
 }
 
@@ -42,7 +42,7 @@ body,
   background: lightseagreen;
   border-radius: 25px;
   box-shadow: 0px 20px 20px 0px #00000017;
-  opacity: 0.9;
+  opacity: 0.8;
 }
 
 .drop-zone {
@@ -122,9 +122,11 @@ body,
 
 .progress-container .bg-progress {
   background: lightskyblue;
+  /*transform:scalex(0.2) (bada-chota)*/
   width: 0%;
   height: 100%;
   border-radius: 3%;
+  /*transitiion for animation of pbar*/
   transition: width 0.25s linear;
   position: absolute;
 }
@@ -145,9 +147,46 @@ body,
 .progress-bar {
   height: 3px;
   width: 100%;
-  background: #010065;
+  background: darkgreen;
   border-radius: 2px;
   transform-origin: left;
   transform: scaleX(0);
   transition: transform 0.25s linear;
+}
+
+
+  
+.sharing-container {
+
+  width:var(--container-width);
+  margin-bottom: 20px;
+      /*remove below commment when host url problem is solved*/
+  /*display:none;*/
+}
+
+p.expire {
+  opacity : .7;
+  text-align:center;
+}
+.sharing-container .input-container {
+  position: relative;
+}
+.sharing-container .input-container input {
+  width:100%;
+  border:2px dashed var(--border-color);
+  border-radius: 6px;
+  padding:10px 15px;
+  box-sizing: border-box;
+  font-size: 20px;
+  background: lightskyblue;
+  color: #0000008c;
+}
+
+.input-container img {
+  position: absolute;
+  height:22px;
+  width:30px;
+  right:7px;
+  top:12px;
+  cursor:pointer;
 }
