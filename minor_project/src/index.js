@@ -2,8 +2,14 @@ const dropZone = document.querySelector(".drop-zone");
 const browseBtn = document.querySelector(".browseBtn");
 const fileInput = document.querySelector("#fileInput");
 
-const host = "https://innshare.herokuapp.com";
-const uploadURL = `${host}api\files`;
+const progressContainer = document.querySelector(".progress-container");
+const bgProgress = document.querySelector(".bg-progress");
+const progressBar = document.querySelector(".progress-bar");
+
+const percentDiv = document.querySelector("#percent");
+
+const host = "https://innshare.herokuapp.com/";
+const uploadURL = `${host}api/files`;
 
 
 dropZone.addEventListener("dragover", (e) => {
@@ -21,7 +27,7 @@ dropZone.addEventListener("drop", (e) => {
     e.preventDefault();
     dropZone.classList.remove("dragged");
     const files = e.dataTransfer.files
-    console.log(files);
+    console.table(files);
     if (files.length) {
         fileInput.files = files;
         //uploading will be done in backend.
@@ -39,6 +45,9 @@ browseBtn.addEventListener("click", () => {
 });
 
 const uploadFile = () => {
+
+    progressContainer.style.display = "block"; //display progress container on file upload
+
     //1 file from many
     const file = fileInput.files[0];
     const formData = new FormData();
@@ -50,6 +59,7 @@ const uploadFile = () => {
         //like(file.length == donefileurl.length)
         if(xhr.readyState == XMLHttpRequest.DONE) {
             console.log(xhr.response);
+            showLink(JSON.parse(xhr.response)); //to show/pass the link of file
         }
     };
     xhr.upload.onprogress = updateProgress();
@@ -61,5 +71,13 @@ const uploadFile = () => {
 
 const updateProgress = (e) => {
     let percent = Math.round((e.loaded / e.total)*100);
-    console.log(percent);
+    // console.log(percent);
+    bgProgress.style.width = `${percent}%`;
+    percentDiv.innerText = percent;  // percentage increase
+    progressBar.style.transform = `scaleX(${percent/100})`;
+}
+
+const showLink = ({file}) => {
+    console.log(file);
+    progressContainer.style.display = "none";
 }
