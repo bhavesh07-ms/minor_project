@@ -13,8 +13,11 @@ const fileURLInput = document.querySelector("#fileURL");
 const sharingContainer = document.querySelector(".sharing-container")
 const copyBtn = document.querySelector("#copyBtn");
 
+const emailForm = document.querySelector("#emailForm");
+
 const host = "https://innshare.herokuapp.com/";
 const uploadURL = `${host}api/files`;
+const emailURL = `${host}api/files/send`;
 
 
 dropZone.addEventListener("dragover", (e) => {
@@ -87,8 +90,38 @@ const updateProgress = (e) => {
 }
 
 const showLink = ({file: url}) => {
-    console.log(file);
+    console.log(url);
+    emailForm[2].removeAttribute("disabled");
     progressContainer.style.display = "none";
     progressContainer.style.display = "block";
-    fileURL.value = url;
+    fileURLInput.value = url;
 }
+
+emailForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    console.log("Submit form");
+    const url = fileURLInput.value;
+
+    const formData = {
+        uuid: url.split("/").splice(-1, 1)[0],
+        emailTo: emailForm.elements["to-email"].value,
+        emailFrom: emailForm.elements["from-email"].value,
+    };
+
+    emailForm[2].setAttribute("disabled", "true"); //to disable send button once email is sent
+
+    console.table(formData);
+    fetch(emailURL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+    }) 
+    .then((res => res.json())
+    .then(({success}) => {
+        if (success) {
+            sharingContainer.style.display = "none";
+        }
+    });
+});
