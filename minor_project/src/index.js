@@ -8,6 +8,11 @@ const progressBar = document.querySelector(".progress-bar");
 
 const percentDiv = document.querySelector("#percent");
 
+const fileURLInput = document.querySelector("#fileURL");
+
+const sharingContainer = document.querySelector(".sharing-container")
+const copyBtn = document.querySelector("#copyBtn");
+
 const host = "https://innshare.herokuapp.com/";
 const uploadURL = `${host}api/files`;
 
@@ -44,6 +49,10 @@ browseBtn.addEventListener("click", () => {
     fileInput.click();
 });
 
+copyBtn.addEventListener("click", () => {
+    fileURLInput.select()
+    document.execCommand("copy");
+})
 const uploadFile = () => {
 
     progressContainer.style.display = "block"; //display progress container on file upload
@@ -77,7 +86,9 @@ const updateProgress = (e) => {
     progressBar.style.transform = `scaleX(${percent/100})`;
 }
 
-const showLink = ({file}) => {
+const showLink = ({file: url}) => {
     console.log(file);
     progressContainer.style.display = "none";
+    progressContainer.style.display = "block";
+    fileURL.value = url;
 }
