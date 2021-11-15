@@ -19,6 +19,9 @@ const host = "https://innshare.herokuapp.com/";
 const uploadURL = `${host}api/files`;
 const emailURL = `${host}api/files/send`;
 
+const toast = document.querySelector(".toast");
+
+const maxAllowedSize = 100 * 1024 * 1024; //100mb
 
 dropZone.addEventListener("dragover", (e) => {
     e.preventDefault();
@@ -53,15 +56,30 @@ browseBtn.addEventListener("click", () => {
 });
 
 copyBtn.addEventListener("click", () => {
-    fileURLInput.select()
+    fileURLInput.select();
     document.execCommand("copy");
+    showToast("copied to clipboard")
 })
 const uploadFile = () => {
 
-    progressContainer.style.display = "block"; //display progress container on file upload
+    if(fileInput.files.length > 1) {
+        resetFileInput()
+        showToast("only upload 1 file");
+        return
+    }
 
     //1 file from many
     const file = fileInput.files[0];
+
+    if(file.size > maxAllowedSize) {
+        showToast("file size is greater than 100mb");
+        resetFileInput();
+        return
+    }
+    progressContainer.style.display = "block"; //display progress container on file upload
+
+    emailForm[2].setAttribute("disabled", "true");
+    
     const formData = new FormData();
     formData.append("myFile",file);
     // upload file(xhr==how any files)
@@ -74,6 +92,11 @@ const uploadFile = () => {
             showLink(JSON.parse(xhr.response)); //to show/pass the link of file
         }
     };
+
+    xhr.upload.onerror = () => {
+        resetFileInput()
+        showToast(`Error on uploding file ${xhr.status}`);
+    }
     xhr.upload.onprogress = updateProgress();
     //will post to the url
     xhr.open("POST",uploadURL)
@@ -89,12 +112,19 @@ const updateProgress = (e) => {
     progressBar.style.transform = `scaleX(${percent/100})`;
 }
 
-const showLink = ({file: url}) => {
+const onUploadSuccess = ({file: url}) => {
     console.log(url);
+
+    resetFileInput()
+
     emailForm[2].removeAttribute("disabled");
     progressContainer.style.display = "none";
     progressContainer.style.display = "block";
     fileURLInput.value = url;
+}
+ 
+const resetFileInput = () => {
+    fileInput.value = "";
 }
 
 emailForm.addEventListener("submit", (e) => {
@@ -122,6 +152,16 @@ emailForm.addEventListener("submit", (e) => {
     .then(({success}) => {
         if (success) {
             sharingContainer.style.display = "none";
+            showToast("Email Sent")
         }
-    });
+    }));
 });
+let toastTimer;
+const showToast = (msg) => {
+    toast.innerText = msg;
+    toast.style.transform = "translate(-50%,0)";
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+        toast.style.transform = "translate(-50%,0)";
+    },2000);
+}
