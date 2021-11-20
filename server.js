@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 const connectDB = require('./config/db')
 
@@ -6,9 +7,16 @@ const PORT = process.env.PORT || 3000;
 
 connectDB();
 
-//Routes-
-app.use('/api/files', require('./routes/files'));
+//Template engine
+app.set('views',path.join(__dirname,'/views'));
+app.set('view engine','ejs');
+
+app.use(express.static('public'));
+
+app.use('/api/files',require('./routes/files'));
+
+app.use('/files',require('./routes/show'))
 
 app.listen(PORT, () => {
-    console.log(`Listening at ${PORT}`)
-});
+    console.log(`Listening at http://localhost:${PORT}`)
+})
