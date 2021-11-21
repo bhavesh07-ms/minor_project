@@ -47,12 +47,43 @@ router.post('/', (req, res) => {
 
 		});
 
-
-	
-
-
 	//Response -> Link
 
+});
+
+router.post('/send', async (req, res) => {
+	const { uuid, emailTo, emailFrom } = req.body;
+
+	//Validate request
+	if(!uuid || !emailTo || !emailFrom) {
+		return res.status(422).send({ error: 'All fields are required.'});
+	}
+
+	//Get data from db
+	const file = await File.findOne({ uuid: uuid });
+	if(file.sender) {
+		return res.status(422).send({ error: 'Email already sent.'});
+	}
+
+	file.sender = emailFrom;
+	file.receiver = emailTo;
+	const response = await file.save();
+
+
+	//Send email
+	const sendMail = require('../services/emailService');
+	sendMail({
+		from: emailFrom,
+		to: emailTo,
+		subject: 'FileApp',
+		text: `${emailFrom} shared a file with you.`,
+		html: require('../services/emailTemplate')({
+			emailFrom: emailFrom,
+			downloadLink: `${process.env.APP_BASE_URL}/files/${file.uuid}`,
+			size: parseInt(file.size/1000) + ' KB',
+			expires: '24 hours'
+		})
+	});
 });
 
 module.exports = router;
